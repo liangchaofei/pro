@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style type="text/css">
+    html,
+    body {
+        padding: 0 10px;
+        margin: 0;
+    }
+    ul,
+    li {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    .question-container {
+        margin-top: 20px;
+        box-sizing: border-box;
+        border-bottom: 1px solid #ccc;
+    }
+    .question-title {
+        font-size: 16px;
+        line-height: 34px;
+        color: #333;
+    }
+    .question-option {
+        color: #666;
+        font-size: 14px;
+        line-height: 24px;
+    }
+    .question-option-input,
+    .question-option-text {
+        display: inline-block;
+        vertical-align: middle;
+    }
+    .question-option-input {
+        margin-right: 10px;
+    }
+    .question-answer {
+        color: #333;
+        font-size: 14px;
+        line-height: 24px;
+    }
+    </style>
+</head>
+<body>
+    <input type="file" id="docInput">
+    <div id="output"></div>
+    <script>
+    document.getElementById('docInput').onchange = function(e) {
+        var file = e.target.files[0];
+        var fileReader = new FileReader();
+        fileReader.readAsText(file, 'UTF-8');
+        fileReader.onload = function() {
+            console.log(fileReader);
+            document.getElementById('output').innerHTML = fileReader.result;
+            var lines = fileReader.result.split('\n');
+            console.log(lines);
+            document.getElementById('output').innerHTML = toHTML(lines);
+        }
+    }
+    // data
+    // type 当前默认为 radio，后续扩展
+    function toHTML(data, type) {
+        console.log('data',data)
+        let tpl = '';
+        let i = 0;
+        let len = data.length;
+        for (; i < len;) {
+            tpl += `<div class="question-container">
+                        <div class="question-title">${data[i]}</div>
+                        <ul class="question-option">`;
+                        console.log('tpl',tpl)
+            let optTpl = '';
+            // 添加name,确保是单选
+            let name = `question-${i}`;
+            for (let m = 0; m < 4; m++) {
+                optTpl += `<li class="question-option-item">
+                                <input class="question-option-input" type="radio" name=${name}>
+                                <span class="question-option-text">${data[i + m + 1]}</span>
+                            </li>`;
+            }
+            tpl += optTpl + `</ul><div class="question-answer">正确答案是：${data[i + 5]}</div>`;
+            i += 6;
+            console.log(i);
+        }
+        return tpl;
+    }
+    // 如果提交给后端，需要将文本内容转化为json数据
+    function formatJson(arr) {
+
+    }
+    </script>
+</body>
+</html>
